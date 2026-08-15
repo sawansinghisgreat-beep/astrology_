@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CosmoVedika | Advanced Multi-Tradition Astrological Intelligence</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts for Mystical Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold-gradient: linear-gradient(135deg, #FFE082 0%, #FFB300 50%, #B78103 100%);
+            --cosmic-bg: #05050f;
+        }
+
+        body {
+            background-color: var(--cosmic-bg);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #E2E8F0;
+            overflow-x: hidden;
+        }
+
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-cinzel-dec { font-family: 'Cinzel Decorative', cursive; }
+
+        .gold-text {
+            background: linear-gradient(135deg, #fff2a3 0%, #e5a93c 50%, #ad7616 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border {
+            border-image: linear-gradient(to bottom right, #f8df8c, #aa781c, #4a3408) 1;
+        }
+
+        .glass-card {
+            background: rgba(13, 15, 36, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.22);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card-glow:hover {
+            border-color: rgba(255, 215, 0, 0.45);
+            box-shadow: 0 0 25px rgba(218, 165, 32, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #070714; }
+        ::-webkit-scrollbar-thumb { background: #584318; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c59b27; }
+
+        /* Kundali SVG Styling */
+        .chart-line { stroke: #c59b27; stroke-width: 1.5; }
+        .chart-subline { stroke: rgba(197, 155, 39, 0.4); stroke-width: 1; stroke-dasharray: 4; }
+        .chart-house-no { fill: rgba(255, 255, 255, 0.35); font-size: 10px; font-family: 'Cinzel', serif; }
+        .chart-sign-no { fill: #facc15; font-size: 11px; font-weight: bold; }
+        .chart-planet { fill: #38bdf8; font-size: 10.5px; font-weight: 600; }
+
+        /* Starlit Canvas background */
+        #stars-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative selection:bg-amber-500 selection:text-black">
+    <canvas id="stars-canvas"></canvas>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+        <!-- HEADER -->
+        <header class="border-b border-amber-900/40 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full border border-amber-500/50 flex items-center justify-center bg-amber-950/30 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                        <i data-lucide="sun" class="w-6 h-6 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-cinzel text-xl sm:text-2xl font-bold tracking-wider gold-text">COSMOVEDIKA</h1>
+                        <p class="text-[10px] tracking-widest uppercase text-amber-300/70 font-cinzel">Parashara • Lal Kitab • Ravana Samhita • Western • Chinese BaZi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 text-xs">
+                    <span class="hidden md:inline-block px-3 py-1 rounded-full border border-amber-500/30 bg-amber-950/20 text-amber-300 font-cinzel">
+                        ॐ नमः शिवाय
+                    </span>
+                    <button onclick="toggleApiKeyModal()" class="px-3 py-1.5 rounded-lg border border-purple-500/40 bg-purple-950/30 text-purple-200 hover:bg-purple-900/40 transition flex items-center gap-1.5">
+                        <i data-lucide="key" class="w-3.5 h-3.5"></i> Custom LLM Key (Opt)
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTAINER -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
+            
+            <!-- INPUT FORM PANEL -->
+            <section class="glass-card rounded-2xl p-6 sm:p-8 mb-10 transition-all">
+                <div class="text-center max-w-2xl mx-auto mb-6">
+                    <h2 class="font-cinzel text-2xl sm:text-3xl font-bold gold-text mb-2">Universal Astral Computation Engine</h2>
+                    <p class="text-sm text-slate-300">Enter your exact terrestrial coordinates & birth time to formulate your Multi-Traditional Astral Matrix.</p>
+                </div>
+
+                <form id="astroForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div>
+                        <label class="block text-xs font-semibold text-amber-200 uppercase tracking-wider mb-2">Full Name</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="absolute left-3 top-3 w-4 h-4 text-slate-400"></i>
+                            <input type="text" id="name" required value="Arjun Sharma" 
+                                class="w-full bg-slate-900/70 border border-amber-900/50 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-amber-200 uppercase tracking-wider mb-2">Gender</label>
+                        <div class="relative">
+                            <i data-lucide="sparkles" class="absolute left-3 top-3 w-4 h-4 text-slate-400"></i>
+                            <select id="gender" class="w-full bg-slate-900/70 border border-amber-900/50 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none transition">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Non-Binary">Non-Binary</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-amber-200 uppercase tracking-wider mb-2">Date of Birth</label>
+                        <div class="relative">
+                            <i data-lucide="calendar" class="absolute left-3 top-3 w-4 h-4 text-slate-400"></i>
+                            <input type="date" id="dob" required value="1998-11-24" 
+                                class="w-full bg-slate-900/70 border border-amber-900/50 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-amber-200 uppercase tracking-wider mb-2">Time of Birth (24h)</label>
+                        <div class="relative">
+                            <i data-lucide="clock" class="absolute left-3 top-3 w-4 h-4 text-slate-400"></i>
+                            <input type="time" id="tob" required value="06:45" 
+                                class="w-full bg-slate-900/70 border border-amber-900/50 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-amber-200 uppercase tracking-wider mb-2">Birth City / Country</label>
+                        <div class="relative">
+                            <i data-lucide="map-pin" class="absolute left-3 top-3 w-4 h-4 text-slate-400"></i>
+                            <input type="text" id="city" required value="New Delhi, India" 
+                                class="w-full bg-slate-900/70 border border-amber-900/50 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-amber-200 uppercase tracking-wider mb-2">Latitude (Dec Deg)</label>
+                        <div class="relative">
+                            <i data-lucide="compass" class="absolute left-3 top-3 w-4 h-4 text-slate-400"></i>
+                            <input type="number" step="any" id="lat" required value="28.6139" 
+                                class="w-full bg-slate-900/70 border border-amber-900/50 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-amber-200 uppercase tracking-wider mb-2">Longitude (Dec Deg)</label>
+                        <div class="relative">
+                            <i data-lucide="compass" class="absolute left-3 top-3 w-4 h-4 text-slate-400"></i>
+                            <input type="number" step="any" id="lon" required value="77.2090" 
+                                class="w-full bg-slate-900/70 border border-amber-900/50 rounded-xl py-2.5 pl-9 pr-3 text-sm focus:border-amber-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <div class="flex items-end">
+                        <button type="submit" id="calculateBtn" 
+                            class="w-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-sm font-cinzel tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.4)] flex items-center justify-center gap-2 transition duration-300 transform active:scale-95">
+                            <i data-lucide="orbit" class="w-4 h-4"></i> Generate Synthesis
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- RESULTS SECTION -->
+            <div id="resultsContainer" class="hidden space-y-10">
+
+                <!-- COSMIC HERO SUMMARY -->
+                <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border-amber-500/30">
+                    <div class="absolute -right-16 -top-16 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-6 border-b border-amber-900/30">
+                        <div>
+                            <span class="text-xs uppercase tracking-widest text-amber-400 font-cinzel">Complete Astrological Alignment</span>
+                            <h2 id="resNameTitle" class="font-cinzel text-3xl font-bold gold-text mt-1">Arjun Sharma</h2>
+                            <p id="resMetaInfo" class="text-xs text-slate-400 mt-1">Born 24 Nov 1998 at 06:45 • New Delhi (28.6° N, 77.2° E)</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 sm:gap-3">
+                            <div class="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-amber-500/30 text-center">
+                                <p class="text-[10px] text-amber-400 uppercase font-cinzel">Lagna (Ascendant)</p>
+                                <p id="badgeLagna" class="text-sm font-bold text-slate-100">Scorpio (Vrishchika)</p>
+                            </div>
+                            <div class="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-blue-500/30 text-center">
+                                <p class="text-[10px] text-blue-400 uppercase font-cinzel">Moon Nakshatra</p>
+                                <p id="badgeNakshatra" class="text-sm font-bold text-slate-100">Uttara Ashadha</p>
+                            </div>
+                            <div class="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-purple-500/30 text-center">
+                                <p class="text-[10px] text-purple-400 uppercase font-cinzel">Chinese BaZi</p>
+                                <p id="badgeChinese" class="text-sm font-bold text-slate-100">Yang Earth Tiger</p>
+                            </div>
+                            <div class="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-emerald-500/30 text-center">
+                                <p class="text-[10px] text-emerald-400 uppercase font-cinzel">Western Sun</p>
+                                <p id="badgeWestern" class="text-sm font-bold text-slate-100">Sagittarius ♐</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB NAVIGATION -->
+                    <div class="flex overflow-x-auto gap-2 pt-6 pb-2 border-b border-slate-800 text-xs sm:text-sm font-cinzel scrollbar-none">
+                        <button onclick="switchTab('tab-vedic')" id="btn-tab-vedic" class="tab-btn px-4 py-2 rounded-lg font-bold border border-amber-500/50 bg-amber-500/20 text-amber-300 whitespace-nowrap transition">
+                            🕉️ Vedic Lagna & Navamsha (D1/D9)
+                        </button>
+                        <button onclick="switchTab('tab-laalkitab')" id="btn-tab-laalkitab" class="tab-btn px-4 py-2 rounded-lg font-medium border border-transparent hover:border-slate-700 text-slate-400 whitespace-nowrap transition">
+                            📕 Lal Kitab Analysis & Totkas
+                        </button>
+                        <button onclick="switchTab('tab-ravana')" id="btn-tab-ravana" class="tab-btn px-4 py-2 rounded-lg font-medium border border-transparent hover:border-slate-700 text-slate-400 whitespace-nowrap transition">
+                            🔱 Ravana Samhita Tantrik Insights
+                        </button>
+                        <button onclick="switchTab('tab-global')" id="btn-tab-global" class="tab-btn px-4 py-2 rounded-lg font-medium border border-transparent hover:border-slate-700 text-slate-400 whitespace-nowrap transition">
+                            🌌 Western & Chinese BaZi Synthesis
+                        </button>
+                        <button onclick="switchTab('tab-ai')" id="btn-tab-ai" class="tab-btn px-4 py-2 rounded-lg font-medium border border-transparent hover:border-slate-700 text-slate-400 whitespace-nowrap transition flex items-center gap-1.5">
+                            🤖 Jyotish AI Guru (Chat)
+                        </button>
+                    </div>
+
+                    <!-- TAB 1: VEDIC KUNDALIS (LAGNA D1 + NAVAMSHA D9) -->
+                    <div id="tab-vedic" class="tab-content pt-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                            <!-- LAGNA CHART (D1) -->
+                            <div class="glass-card rounded-2xl p-5 border-amber-500/20">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h3 class="font-cinzel text-lg font-bold gold-text">Lagna Kundali (D1 - Birth Chart)</h3>
+                                        <p class="text-xs text-slate-400">Physical Reality, Health, Life Path & Ascendant</p>
+                                    </div>
+                                    <span class="text-xs bg-amber-950/60 border border-amber-500/30 text-amber-300 px-2.5 py-1 rounded">Parashari D1</span>
+                                </div>
+                                <div class="flex justify-center p-2 bg-slate-950/60 rounded-xl border border-slate-800">
+                                    <svg id="lagnaChartSvg" viewBox="0 0 400 400" class="w-full max-w-[340px] aspect-square"></svg>
+                                </div>
+                            </div>
+
+                            <!-- NAVAMSHA CHART (D9) -->
+                            <div class="glass-card rounded-2xl p-5 border-amber-500/20">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h3 class="font-cinzel text-lg font-bold gold-text">Navamsha Kundali (D9 - Soul Chart)</h3>
+                                        <p class="text-xs text-slate-400">Dharmic Destiny, Spouse, Inner Soul & Later Life</p>
+                                    </div>
+                                    <span class="text-xs bg-purple-950/60 border border-purple-500/30 text-purple-300 px-2.5 py-1 rounded">Parashari D9</span>
+                                </div>
+                                <div class="flex justify-center p-2 bg-slate-950/60 rounded-xl border border-slate-800">
+                                    <svg id="navamshaChartSvg" viewBox="0 0 400 400" class="w-full max-w-[340px] aspect-square"></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PLANETARY POSITIONS TABLE -->
+                        <div class="glass-card rounded-2xl p-5 overflow-x-auto">
+                            <h3 class="font-cinzel text-base font-bold gold-text mb-3">Vedic Graha Nirayana Ephemeris (Lahiri Ayanamsha)</h3>
+                            <table class="w-full text-xs text-left">
+                                <thead class="border-b border-amber-900/40 text-amber-300/80 font-cinzel">
+                                    <tr>
+                                        <th class="py-2.5 px-3">Graha</th>
+                                        <th class="py-2.5 px-3">Rashi (Sign)</th>
+                                        <th class="py-2.5 px-3">Degrees</th>
+                                        <th class="py-2.5 px-3">Nakshatra & Pada</th>
+                                        <th class="py-2.5 px-3">D1 House</th>
+                                        <th class="py-2.5 px-3">D9 Navamsha</th>
+                                        <th class="py-2.5 px-3">Avastha / Nature</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="grahaTableBody" class="divide-y divide-slate-800/60 text-slate-300">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: LAL KITAB -->
+                    <div id="tab-laalkitab" class="tab-content hidden pt-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="glass-card rounded-2xl p-5 border-rose-500/30 bg-rose-950/10">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i data-lucide="alert-triangle" class="text-rose-400 w-5 h-5"></i>
+                                    <h4 class="font-cinzel font-bold text-rose-300 text-sm">Ancestral Karmic Debts (Rin)</h4>
+                                </div>
+                                <div id="lkDebtsList" class="text-xs space-y-2 text-slate-300">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+
+                            <div class="glass-card rounded-2xl p-5 border-amber-500/30 bg-amber-950/10">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i data-lucide="eye-off" class="text-amber-400 w-5 h-5"></i>
+                                    <h4 class="font-cinzel font-bold text-amber-300 text-sm">Blind / Sleeping Houses</h4>
+                                </div>
+                                <div id="lkBlindHouses" class="text-xs space-y-2 text-slate-300">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+
+                            <div class="glass-card rounded-2xl p-5 border-emerald-500/30 bg-emerald-950/10">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i data-lucide="shield-check" class="text-emerald-400 w-5 h-5"></i>
+                                    <h4 class="font-cinzel font-bold text-emerald-300 text-sm">Sacred Safeguard Totkas</h4>
+                                </div>
+                                <div id="lkGeneralPrecautions" class="text-xs space-y-2 text-slate-300">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LAL KITAB HOUSE BY HOUSE REMEDIES -->
+                        <div class="glass-card rounded-2xl p-6">
+                            <h3 class="font-cinzel text-lg font-bold gold-text mb-4">Lal Kitab Farman & Customized Daily Upayas</h3>
+                            <div id="lkRemediesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: RAVANA SAMHITA -->
+                    <div id="tab-ravana" class="tab-content hidden pt-6 space-y-6">
+                        <div class="glass-card rounded-2xl p-6 border-amber-500/30 bg-gradient-to-b from-amber-950/20 to-transparent">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-cinzel font-bold">
+                                    🔱
+                                </div>
+                                <div>
+                                    <h3 class="font-cinzel text-xl font-bold gold-text">Ravana Samhita: Tantrik Planetary Yogas</h3>
+                                    <p class="text-xs text-slate-400">Esoteric insights from Lankeshwar Ravana's Arka Prakash and Indrajaal</p>
+                                </div>
+                            </div>
+
+                            <div id="ravanaYogas" class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs text-slate-300">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6">
+                            <h3 class="font-cinzel text-base font-bold gold-text mb-4">Karmic Sanchita & Customized Siddha Beej Mantras</h3>
+                            <div id="ravanaMantras" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: GLOBAL SYNTHESIS (WESTERN + CHINESE BAZI) -->
+                    <div id="tab-global" class="tab-content hidden pt-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- WESTERN ASTROLOGY -->
+                            <div class="glass-card rounded-2xl p-6 border-cyan-500/30">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <i data-lucide="compass" class="text-cyan-400 w-6 h-6"></i>
+                                    <h3 class="font-cinzel text-lg font-bold text-cyan-300">Western Tropical Archetype</h3>
+                                </div>
+                                <div id="westernSynthesis" class="space-y-4 text-xs text-slate-300">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+
+                            <!-- CHINESE BAZI -->
+                            <div class="glass-card rounded-2xl p-6 border-red-500/30">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <i data-lucide="flame" class="text-red-400 w-6 h-6"></i>
+                                    <h3 class="font-cinzel text-lg font-bold text-red-300">Chinese BaZi & Wu Xing (Five Elements)</h3>
+                                </div>
+                                <div id="chineseSynthesis" class="space-y-4 text-xs text-slate-300">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UNIFIED SYNTHESIS CARD -->
+                        <div class="glass-card rounded-2xl p-6 border-amber-500/40">
+                            <h3 class="font-cinzel text-lg font-bold gold-text mb-2">Grand Multi-Tradition Concordance</h3>
+                            <p id="grandSynthesisText" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                <!-- Populated via JS -->
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: AI ASTROLOGER CHAT -->
+                    <div id="tab-ai" class="tab-content hidden pt-6">
+                        <div class="glass-card rounded-2xl p-6 border-purple-500/40 flex flex-col h-[600px]">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-purple-900/50 border border-purple-400/50 flex items-center justify-center text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.4)]">
+                                        <i data-lucide="bot" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-cinzel text-base font-bold text-purple-300">Divya Vani (Rishi AI Oracle)</h3>
+                                        <p class="text-[11px] text-slate-400">Contextualized on your Lagna, D9, Lal Kitab & BaZi Matrix</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="askQuickPrompt('What is my soul career path based on D1 & D9?')" class="hidden sm:inline text-[11px] px-2.5 py-1 rounded bg-slate-900 border border-slate-700 hover:border-amber-400 text-slate-300 transition">Career in D1/D9</button>
+                                    <button onclick="askQuickPrompt('What are my major Lal Kitab karmic remedies?')" class="hidden sm:inline text-[11px] px-2.5 py-1 rounded bg-slate-900 border border-slate-700 hover:border-amber-400 text-slate-300 transition">Lal Kitab Remedies</button>
+                                </div>
+                            </div>
+
+                            <!-- CHAT MESSAGE LOG -->
+                            <div id="chatLog" class="flex-1 overflow-y-auto py-4 space-y-4 pr-2 text-xs sm:text-sm">
+                                <div class="flex gap-3 items-start">
+                                    <div class="w-7 h-7 rounded-full bg-purple-900/60 border border-purple-400/40 flex-shrink-0 flex items-center justify-center text-purple-300 font-cinzel text-xs">ॐ</div>
+                                    <div class="bg-slate-900/80 border border-slate-800 rounded-2xl rounded-tl-none p-3.5 max-w-[85%] text-slate-200 leading-relaxed shadow-sm">
+                                        Pranam! I am your <strong>Divya Vani Jyotish Oracle</strong>. I have synthesized your <strong>Parashara D1/D9 Charts</strong>, <strong>Lal Kitab Farman</strong>, <strong>Ravana Samhita Yogas</strong>, and <strong>Chinese BaZi Pillars</strong>. Ask me anything about your career, marriage timings, past-life debts, or specific remedies.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CHAT INPUT -->
+                            <div class="pt-3 border-t border-slate-800 flex gap-2">
+                                <input type="text" id="aiInput" placeholder="Ask about career, marriage timing, Navamsha spouse, wealth remedies..." 
+                                    onkeypress="if(event.key === 'Enter') handleAiSend()"
+                                    class="flex-1 bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-100 focus:border-purple-400 focus:outline-none transition">
+                                <button onclick="handleAiSend()" class="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-500 hover:to-amber-500 text-white font-bold px-4 py-2.5 rounded-xl transition flex items-center justify-center shadow-lg">
+                                    <i data-lucide="send" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-amber-900/30 bg-black/50 py-6 text-center text-xs text-slate-400 font-cinzel">
+            <p>CosmoVedika • Classical Jyotish, Lal Kitab, Ravana Samhita & Multi-Tradition Astrological Engine</p>
+        </footer>
+    </div>
+
+    <!-- API KEY MODAL -->
+    <div id="apiKeyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-2xl p-6 border-purple-500/40 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-cinzel text-lg font-bold text-purple-300">Custom LLM Engine (Optional)</h3>
+                <button onclick="toggleApiKeyModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <p class="text-xs text-slate-300">By default, CosmoVedika uses an ultra-fast built-in Vedic Jyotish reasoning system. If you wish to connect your own OpenAI or Gemini API Key for deep LLM streaming, paste it below (kept local in your browser memory):</p>
+            
+            <div>
+                <label class="block text-[11px] uppercase tracking-wider text-purple-300 mb-1">Provider</label>
+                <select id="llmProvider" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+                    <option value="gemini">Google Gemini API (gemini-1.5-flash / gemini-2.5)</option>
+                    <option value="openai">OpenAI API (gpt-4o / gpt-3.5)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[11px] uppercase tracking-wider text-purple-300 mb-1">API Key</label>
+                <input type="password" id="userApiKey" placeholder="AIzaSy... or sk-..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="toggleApiKeyModal()" class="px-4 py-2 text-xs rounded-lg border border-slate-700 hover:bg-slate-800">Close</button>
+                <button onclick="saveApiKey()" class="px-4 py-2 text-xs rounded-lg bg-purple-600 hover:bg-purple-500 font-bold text-white">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT SECTION -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // ---------------- STAR BACKGROUND CANVAS ----------------
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = Array.from({ length: 140 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                alpha: Math.random() * 0.8 + 0.2,
+                speed: Math.random() * 0.02 + 0.005
+            }));
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let s of stars) {
+                s.alpha += s.speed;
+                if (s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
+                ctx.fillStyle = `rgba(255, 223, 130, ${Math.abs(s.alpha)})`;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+        // ---------------- ASTROLOGY DATA CONSTANTS ----------------
+        const RASHIS = [
+            { id: 1, name: "Aries (Mesha)", ruler: "Mars", element: "Fire", symbol: "♈" },
+            { id: 2, name: "Taurus (Vrishabha)", ruler: "Venus", element: "Earth", symbol: "♉" },
+            { id: 3, name: "Gemini (Mithuna)", ruler: "Mercury", element: "Air", symbol: "♊" },
+            { id: 4, name: "Cancer (Karka)", ruler: "Moon", element: "Water", symbol: "♋" },
+            { id: 5, name: "Leo (Simha)", ruler: "Sun", element: "Fire", symbol: "♌" },
+            { id: 6, name: "Virgo (Kanya)", ruler: "Mercury", element: "Earth", symbol: "♍" },
+            { id: 7, name: "Libra (Tula)", ruler: "Venus", element: "Air", symbol: "♎" },
+            { id: 8, name: "Scorpio (Vrishchika)", ruler: "Mars", element: "Water", symbol: "♏" },
+            { id: 9, name: "Sagittarius (Dhanu)", ruler: "Jupiter", element: "Fire", symbol: "♐" },
+            { id: 10, name: "Capricorn (Makara)", ruler: "Saturn", element: "Earth", symbol: "♑" },
+            { id: 11, name: "Aquarius (Kumbha)", ruler: "Saturn", element: "Air", symbol: "♒" },
+            { id: 12, name: "Pisces (Meena)", ruler: "Jupiter", element: "Water", symbol: "♓" }
+        ];
+
+        const NAKSHATRAS = [
+            "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu",
+            "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta",
+            "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha",
+            "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada",
+            "Uttara Bhadrapada", "Revati"
+        ];
+
+        const CHINESE_ANIMALS = [
+            { name: "Rat", element: "Water", yinYang: "Yang" },
+            { name: "Ox", element: "Earth", yinYang: "Yin" },
+            { name: "Tiger", element: "Wood", yinYang: "Yang" },
+            { name: "Rabbit", element: "Wood", yinYang: "Yin" },
+            { name: "Dragon", element: "Earth", yinYang: "Yang" },
+            { name: "Snake", element: "Fire", yinYang: "Yin" },
+            { name: "Horse", element: "Fire", yinYang: "Yang" },
+            { name: "Goat", element: "Earth", yinYang: "Yin" },
+            { name: "Monkey", element: "Metal", yinYang: "Yang" },
+            { name: "Rooster", element: "Metal", yinYang: "Yin" },
+            { name: "Dog", element: "Earth", yinYang: "Yang" },
+            { name: "Pig", element: "Water", yinYang: "Yin" }
+        ];
+
+        const CHINESE_STEM_ELEMENTS = ["Wood", "Wood", "Fire", "Fire", "Earth", "Earth", "Metal", "Metal", "Water", "Water"];
+
+        // Global Chart State
+        let currentChartState = null;
+
+        // ---------------- TAB SWITCHING ----------------
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-amber-500/50', 'bg-amber-500/20', 'text-amber-300', 'font-bold');
+                btn.classList.add('text-slate-400', 'border-transparent');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-400', 'border-transparent');
+                activeBtn.classList.add('border-amber-500/50', 'bg-amber-500/20', 'text-amber-300', 'font-bold');
+            }
+            lucide.createIcons();
+        }
+
+        // ---------------- CORE CALCULATION ENGINE ----------------
+        function calculateAstrology(name, gender, dobStr, tobStr, lat, lon) {
+            const dob = new Date(dobStr + 'T' + tobStr + ':00Z');
+            const year = dob.getUTCFullYear();
+            const month = dob.getUTCMonth() + 1;
+            const day = dob.getUTCDate();
+            const hour = dob.getUTCHours() + dob.getUTCMinutes() / 60;
+
+            // Approximate Julian Day
+            const a = Math.floor((14 - month) / 12);
+            const y = year + 4800 - a;
+            const m = month + 12 * a - 3;
+            let jd = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+            jd += (hour - 12) / 24.0;
+
+            // Lahiri Ayanamsha approx (2000 epoch = 23.85°, ~50.29" per year)
+            const t = (jd - 2451545.0) / 36525.0;
+            const ayanamsha = 23.85 + (t * 1.396);
+
+            // Tropical Sun Longitude approx
+            const d = jd - 2451543.5;
+            const sunMean = (280.460 + 0.9856474 * d) % 360;
+            const sunAnomaly = ((357.528 + 0.9856003 * d) % 360) * (Math.PI / 180);
+            const sunTropical = (sunMean + 1.915 * Math.sin(sunAnomaly) + 0.020 * Math.sin(2 * sunAnomaly)) % 360;
+            const sunSidereal = (sunTropical - ayanamsha + 360) % 360;
+
+            // Moon Longitude approx
+            const moonMean = (218.316 + 13.176396 * d) % 360;
+            const moonAnomaly = ((134.963 + 13.064993 * d) % 360) * (Math.PI / 180);
+            const moonTropical = (moonMean + 6.289 * Math.sin(moonAnomaly)) % 360;
+            const moonSidereal = (moonTropical - ayanamsha + 360) % 360;
+
+            // Local Sidereal Time (RAMC) & Ascendant (Lagna)
+            const gmst = (18.697374558 + 24.06570982441908 * (jd - 2451545.0)) % 24;
+            const lst = ((gmst + (lon / 15.0)) % 24 + 24) % 24;
+            const ramc = lst * 15 * (Math.PI / 180);
+            const eps = (23.439 - 0.0000004 * d) * (Math.PI / 180);
+            const phi = lat * (Math.PI / 180);
+
+            let ascTropical = Math.atan2(Math.cos(ramc), -Math.sin(ramc) * Math.cos(eps) - Math.tan(phi) * Math.sin(eps)) * (180 / Math.PI);
+            if (ascTropical < 0) ascTropical += 360;
+            const ascSidereal = (ascTropical - ayanamsha + 360) % 360;
+
+            const lagnaRashiIndex = Math.floor(ascSidereal / 30); // 0-based: 0 = Aries
+            const lagnaRashi = RASHIS[lagnaRashiIndex];
+
+            // Helper to get planetary sign and house
+            function getGrahaInfo(siderealDeg, name, symbol) {
+                const signIndex = Math.floor(siderealDeg / 30);
+                const signDeg = (siderealDeg % 30);
+                const nakshatraIndex = Math.floor(siderealDeg / (360 / 27));
+                const pada = Math.floor((siderealDeg % (360 / 27)) / (360 / 108)) + 1;
+                
+                // House in Lagna Chart (1-based, equal house / whole sign)
+                const houseD1 = ((signIndex - lagnaRashiIndex + 12) % 12) + 1;
+
+                // Navamsha (D9) sign index: (siderealDeg * 9) % 360 / 30
+                const navamshaDeg = (siderealDeg * 9) % 360;
+                const d9SignIndex = Math.floor(navamshaDeg / 30);
+                const navamshaLagnaIndex = Math.floor(((ascSidereal * 9) % 360) / 30);
+                const houseD9 = ((d9SignIndex - navamshaLagnaIndex + 12) % 12) + 1;
+
+                return {
+                    name,
+                    symbol,
+                    longitude: siderealDeg,
+                    sign: RASHIS[signIndex],
+                    signDeg: signDeg.toFixed(2),
+                    nakshatra: NAKSHATRAS[nakshatraIndex],
+                    pada,
+                    houseD1,
+                    d9Sign: RASHIS[d9SignIndex],
+                    houseD9
+                };
+            }
+
+            // Approximate Planetary Speeds & Locations
+            const marsSidereal = ((sunSidereal * 0.53 + 45) % 360);
+            const mercurySidereal = ((sunSidereal + 12 * Math.sin(d / 10)) % 360 + 360) % 360;
+            const jupiterSidereal = ((sunSidereal * 0.084 + 190) % 360);
+            const venusSidereal = ((sunSidereal + 25 * Math.cos(d / 8)) % 360 + 360) % 360;
+            const saturnSidereal = ((sunSidereal * 0.034 + 295) % 360);
+            const rahuSidereal = ((360 - (d * 0.05295) % 360) % 360);
+            const ketuSidereal = (rahuSidereal + 180) % 360;
+
+            const planets = [
+                getGrahaInfo(sunSidereal, "Sun (Surya)", "☉"),
+                getGrahaInfo(moonSidereal, "Moon (Chandra)", "☽"),
+                getGrahaInfo(marsSidereal, "Mars (Mangal)", "♂"),
+                getGrahaInfo(mercurySidereal, "Mercury (Budha)", "☿"),
+                getGrahaInfo(jupiterSidereal, "Jupiter (Guru)", "♃"),
+                getGrahaInfo(venusSidereal, "Venus (Shukra)", "♀"),
+                getGrahaInfo(saturnSidereal, "Saturn (Shani)", "♄"),
+                getGrahaInfo(rahuSidereal, "Rahu (North Node)", "☊"),
+                getGrahaInfo(ketuSidereal, "Ketu (South Node)", "☋")
+            ];
+
+            // Western Signs
+            const westernSunIndex = Math.floor(sunTropical / 30);
+            const westernSun = RASHIS[westernSunIndex];
+
+            // Chinese BaZi Calculation
+            const chineseYear = (year - 4) % 60;
+            const chineseAnimal = CHINESE_ANIMALS[(year - 4) % 12];
+            const chineseStemElement = CHINESE_STEM_ELEMENTS[(year - 4) % 10];
+
+            return {
+                name,
+                gender,
+                dobStr,
+                tobStr,
+                lat,
+                lon,
+                lagna: lagnaRashi,
+                lagnaDeg: (ascSidereal % 30).toFixed(2),
+                lagnaRashiIndex,
+                navamshaLagnaIndex: Math.floor(((ascSidereal * 9) % 360) / 30),
+                planets,
+                westernSun,
+                chineseAnimal,
+                chineseStemElement,
+                ayanamsha: ayanamsha.toFixed(2)
+            };
+        }
+
+        // ---------------- SVG NORTH INDIAN KUNDALI GENERATOR ----------------
+        function renderNorthIndianChart(svgId, centerSignIndex, planetsList, isNavamsha = false) {
+            const svg = document.getElementById(svgId);
+            svg.innerHTML = ''; // Clear existing
+
+            // Geometry Coordinates for 400x400 diamond chart
+            const W = 400, H = 400;
+            const midX = W / 2, midY = H / 2;
+
+            let html = `
+                <!-- Outer Border -->
+                <rect x="5" y="5" width="390" height="390" fill="#080a1c" stroke="#c59b27" stroke-width="2"/>
+                <!-- Diagonal Cross Lines -->
+                <line x1="5" y1="5" x2="395" y2="395" class="chart-line"/>
+                <line x1="395" y1="5" x2="5" y2="395" class="chart-line"/>
+                <!-- Diamond in center -->
+                <polygon points="${midX},5 395,${midY} ${midX},395 5,${midY}" fill="#0f132e" stroke="#c59b27" stroke-width="1.5"/>
+            `;
+
+            // House Anchor Centers (North Indian fixed positions 1-12)
+            const housePos = {
+                1:  { x: 200, y: 130, signX: 200, signY: 85,  num: 1 },
+                2:  { x: 100, y: 55,  signX: 110, signY: 35,  num: 2 },
+                3:  { x: 55,  y: 100, signX: 35,  signY: 110, num: 3 },
+                4:  { x: 130, y: 200, signX: 85,  signY: 200, num: 4 },
+                5:  { x: 55,  y: 300, signX: 35,  signY: 290, num: 5 },
+                6:  { x: 100, y: 345, signX: 110, signY: 365, num: 6 },
+                7:  { x: 200, y: 270, signX: 200, signY: 315, num: 7 },
+                8:  { x: 300, y: 345, signX: 290, signY: 365, num: 8 },
+                9:  { x: 345, y: 300, signX: 365, signY: 290, num: 9 },
+                10: { x: 270, y: 200, signX: 315, signY: 200, num: 10 },
+                11: { x: 345, y: 100, signX: 365, signY: 110, num: 11 },
+                12: { x: 300, y: 55,  signX: 290, signY: 35,  num: 12 }
+            };
+
+            // Calculate which sign number sits in which house
+            // In North Indian style: House 1 gets centerSignIndex + 1, House 2 gets (centerSignIndex + 1) + 1, etc.
+            for (let h = 1; h <= 12; h++) {
+                const signNumber = ((centerSignIndex + (h - 1)) % 12) + 1;
+                const pos = housePos[h];
+
+                // Render Rashi number in house corner
+                html += `<text x="${pos.signX}" y="${pos.signY}" text-anchor="middle" class="chart-sign-no">${signNumber}</text>`;
+
+                // Find planets in this house
+                const housePlanets = planetsList.filter(p => isNavamsha ? p.houseD9 === h : p.houseD1 === h);
+
+                if (housePlanets.length > 0) {
+                    const pText = housePlanets.map(p => p.name.split(' ')[0].substring(0, 2)).join(' ');
+                    html += `<text x="${pos.x}" y="${pos.y}" text-anchor="middle" class="chart-planet">${pText}</text>`;
+                }
+            }
+
+            svg.innerHTML = html;
+        }
+
+        // ---------------- LAL KITAB ENGINE ----------------
+        function generateLalKitabAnalysis(state) {
+            const debts = [];
+            const blindHouses = [];
+            const remedies = [];
+            const precautions = [];
+
+            // Check Lal Kitab Karmic Debts
+            const sunHouse = state.planets.find(p => p.name.includes("Sun")).houseD1;
+            const saturnHouse = state.planets.find(p => p.name.includes("Saturn")).houseD1;
+            const rahuHouse = state.planets.find(p => p.name.includes("Rahu")).houseD1;
+            const marsHouse = state.planets.find(p => p.name.includes("Mars")).houseD1;
+            const jupiterHouse = state.planets.find(p => p.name.includes("Jupiter")).houseD1;
+
+            if (saturnHouse === 1 || saturnHouse === 5 || saturnHouse === 9) {
+                debts.push({
+                    title: "Pitru Rin (Father's Karmic Debt)",
+                    cause: "Disrespect or hardship faced by elder ancestors/priests in the family lineage.",
+                    totka: "Collect equal contributions of silver from blood relatives and submerge it in running river water."
+                });
+            }
+
+            if (rahuHouse === 5 || rahuHouse === 12) {
+                debts.push({
+                    title: "Matru Rin (Mother's Debt / Sarp Rin)",
+                    cause: "Neglect of maternal figures or disruption to living natural habitats in past births.",
+                    totka: "Collect silver coins from all family members and donate them to sacred water bodies."
+                });
+            }
+
+            if (marsHouse === 4 || marsHouse === 8) {
+                debts.push({
+                    title: "Bhratri Rin (Sibling Debt / Angarak Rin)",
+                    cause: "Hostility or disputes over heritage with brothers/kinsmen.",
+                    totka: "Distribute sweetened roasted wheat rotis (Meethi Roti) to stray animals and birds regularly."
+                });
+            }
+
+            if (debts.length === 0) {
+                debts.push({
+                    title: "Sva-Dharma Rin (Self Karmic Accountability)",
+                    cause: "No heavy lineage debt found. Individual accountability for daily dharmic conduct applies.",
+                    totka: "Offer yellow lentils (Chana Dal) and turmeric to religious places on Thursdays."
+                });
+            }
+
+            // Lal Kitab Specific Remedies per House Placement
+            state.planets.forEach(p => {
+                let remedyText = "";
+                if (p.name.includes("Sun")) {
+                    remedyText = p.houseD1 === 6 ? "Avoid keeping temple idols made of pure gold at home; feed monkeys." : "Offer water to Surya at sunrise from a copper vessel with jaggery.";
+                } else if (p.name.includes("Moon")) {
+                    remedyText = p.houseD1 === 6 ? "Never donate milk or water for charitable kiosks (Pyau); donate medicines instead." : "Touch mother's feet daily and store water in silver vessels.";
+                } else if (p.name.includes("Jupiter")) {
+                    remedyText = "Apply Saffron (Kesar) or Turmeric tilak on the forehead and navel every morning.";
+                } else if (p.name.includes("Saturn")) {
+                    remedyText = p.houseD1 === 1 ? "Never consume alcohol or non-veg; serve blind or disabled persons on Saturdays." : "Offer mustard oil (Chhaya Daan) on Saturdays.";
+                } else if (p.name.includes("Rahu")) {
+                    remedyText = "Keep a solid square piece of pure silver in your wallet/pocket; wash barley with raw milk and submerge in water.";
+                } else if (p.name.includes("Ketu")) {
+                    remedyText = "Feed two-colored (black and white) stray dogs with sesame bread daily.";
+                }
+
+                if (remedyText) {
+                    remedies.push({
+                        graha: p.name,
+                        house: p.houseD1,
+                        text: remedyText
+                    });
+                }
+            });
+
+            precautions.push("Never accept religious items, iron, or leather as free gifts from strangers.");
+            precautions.push("Maintain a harmonious eastern and northern corner in the home to unblock dormant fortune.");
+            precautions.push("Keep water drains around the home clean to safeguard Mercury and Rahu energy.");
+
+            return { debts, remedies, precautions };
+        }
+
+        // ---------------- RAVANA SAMHITA ENGINE ----------------
+        function generateRavanaSamhitaInsights(state) {
+            const yogas = [];
+            const mantras = [];
+
+            const ascId = state.lagna.id;
+            const jupiter = state.planets.find(p => p.name.includes("Jupiter"));
+            const sun = state.planets.find(p => p.name.includes("Sun"));
+            const venus = state.planets.find(p => p.name.includes("Venus"));
+            const mars = state.planets.find(p => p.name.includes("Mars"));
+
+            // Tantrik Combination 1: Shiva Arka Yoga
+            if (sun.houseD1 === 1 || sun.houseD1 === 5 || sun.houseD1 === 9) {
+                yogas.push({
+                    title: "Shiva Arka Tejas Yoga",
+                    sloka: "रवि लग्न गतो यस्य शिवभक्ति परायणः। सर्व सिद्धिर्भवेत्तस्य रावणेन समीरितम्॥",
+                    meaning: "Ravana proclaims immense leadership magnetism and sudden intuitive authority. Past life connected with temple administration or royal treasury.",
+                    activation: "Recite Aditya Hridaya Stotram at sunrise facing East."
+                });
+            }
+
+            // Tantrik Combination 2: Maya Shukra Yoga
+            if (venus.houseD1 === 1 || venus.houseD1 === 4 || venus.houseD1 === 7 || venus.houseD1 === 12) {
+                yogas.push({
+                    title: "Lankeshwar Maya-Kavach Yoga",
+                    sloka: "शुक्र स्थाने बलोपेते भोग ऐश्वर्य वर्धनम्।",
+                    meaning: "Deep creative perception and uncanny ability to understand emotional subtexts. Material manifestation power multiplies after marriage.",
+                    activation: "Wear natural fragrance (Attar) and chant Shukra Beej Mantra on Fridays."
+                });
+            }
+
+            // Tantrik Combination 3: Guru-Brahma Drishti
+            if (jupiter.houseD1 === 1 || jupiter.houseD1 === 5 || jupiter.houseD1 === 9 || jupiter.houseD1 === 10) {
+                yogas.push({
+                    title: "Brahma Jnana Yoga (Ravana Tantra)",
+                    sloka: "यदा गुरु केंद्र गतो विशुद्धः करोति मर्त्यं बहुशास्त्रवेत्ताम्॥",
+                    meaning: "High capacity for decoding occult sciences, financial mastery, and philosophical scholarship.",
+                    activation: "Meditate on Dakshinamurthy with saffron rosary."
+                });
+            }
+
+            if (yogas.length === 0) {
+                yogas.push({
+                    title: "Rudra Sankalpa Yoga",
+                    sloka: "यस्य भावे शुभं दृष्टं तस्य सिद्धिः प्रजायते॥",
+                    meaning: "Great willpower against prolonged adversity. You rise like a phoenix through disciplined persistence.",
+                    activation: "Recite Maha Mrityunjaya Mantra 11 times daily."
+                });
+            }
+
+            // Siddha Beej Mantras
+            mantras.push({ deity: "Lord Shiva (Ravan Archita)", mantra: "ॐ नमः शिवाय शुभं शुभं कुरु कुरु शिवाय नमः ॐ", count: "108 times daily" });
+            mantras.push({ deity: "Navagraha Beej (Lagna Ruler: " + state.lagna.ruler + ")", mantra: "ॐ ह्रीं क्लीं महालक्ष्म्यै नमः", count: "At Twilight" });
+            mantras.push({ deity: "Ravana Krita Shiva Tandava", mantra: "जटाटवीगलज्जलप्रवाहपावितस्थले गलेऽवलम्ब्य लम्बितां भुजङ्गतुङ्गमालिकाम्...", count: "Once on Pradosha" });
+
+            return { yogas, mantras };
+        }
+
+        // ---------------- WESTERN & CHINESE ENGINE ----------------
+        function generateGlobalSynthesis(state) {
+            const westernDesc = `
+                <div class="space-y-2">
+                    <p><strong>Tropical Sun Sign:</strong> <span class="text-amber-300 font-bold">${state.westernSun.name} ${state.westernSun.symbol}</span> (${state.westernSun.element} Element)</p>
+                    <p><strong>Sidereal Ascendant / Rising:</strong> <span class="text-amber-300 font-bold">${state.lagna.name} ${state.lagna.symbol}</span> (${state.lagna.element} Element)</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        In Western psychological astrology, you embody the archetype of the <em>${state.westernSun.name.split(' ')[0]} Seeker</em>, driven by high philosophical ideals. However, your Vedic Sidereal Ascendant in <em>${state.lagna.name.split(' ')[0]}</em> adds an intense, penetrating strategic acumen. You project determination while maintaining an expansive, wisdom-seeking internal drive.
+                    </p>
+                </div>
+            `;
+
+            const chineseDesc = `
+                <div class="space-y-2">
+                    <p><strong>Lunar Zodiac Animal:</strong> <span class="text-red-400 font-bold">${state.chineseAnimal.name}</span> (${state.chineseAnimal.yinYang})</p>
+                    <p><strong>Heavenly Stem Element:</strong> <span class="text-red-400 font-bold">${state.chineseStemElement}</span> (Fixed: ${state.chineseAnimal.element})</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        In Chinese BaZi (Four Pillars), you are influenced by the <strong>${state.chineseStemElement} ${state.chineseAnimal.name}</strong>. This aligns with dynamic courage, protective instinct, and instinctive executive leadership. The synergy of your Vedic fire/water balance with Eastern Wood/Earth stems provides exceptional longevity and career resilience when channelled into focused mastery.
+                    </p>
+                </div>
+            `;
+
+            const grandSynthesis = `
+                <strong>Grand Unified Thesis:</strong> By synthesizing <em>Parashari Vedic principles</em> with <em>Lal Kitab karmic trajectories</em>, <em>Ravana Samhita tantrik currents</em>, and <em>Chinese BaZi Five-Element theory</em>, your astral matrix indicates a path of substantial material attainment achieved after solving ancestral karmic friction. Your Lagna in <strong>${state.lagna.name}</strong> grants formidable instinct, your Navamsha reveals strong dharmic alignment in partnerships, and your Chinese <strong>${state.chineseAnimal.name}</strong> pillar imbues you with the fortitude to overcome any astrological transit (Dasha/Gochar).
+            `;
+
+            return { westernDesc, chineseDesc, grandSynthesis };
+        }
+
+        // ---------------- UI CONTROLLER & FORM SUBMISSION ----------------
+        document.getElementById('astroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const gender = document.getElementById('gender').value;
+            const dob = document.getElementById('dob').value;
+            const tob = document.getElementById('tob').value;
+            const lat = parseFloat(document.getElementById('lat').value);
+            const lon = parseFloat(document.getElementById('lon').value);
+            const city = document.getElementById('city').value;
+
+            // Compute Full Astrology State
+            const state = calculateAstrology(name, gender, dob, tob, lat, lon);
+            currentChartState = state;
+
+            // Populate Summary Header
+            document.getElementById('resNameTitle').innerText = state.name;
+            document.getElementById('resMetaInfo').innerText = `Born ${state.dobStr} at ${state.tobStr} • ${city} (${state.lat}°, ${state.lon}°) • Ayanamsha: ${state.ayanamsha}°`;
+            document.getElementById('badgeLagna').innerText = state.lagna.name.split(' ')[0];
+            const moonObj = state.planets.find(p => p.name.includes("Moon"));
+            document.getElementById('badgeNakshatra').innerText = `${moonObj.nakshatra} (Pada ${moonObj.pada})`;
+            document.getElementById('badgeChinese').innerText = `${state.chineseStemElement} ${state.chineseAnimal.name}`;
+            document.getElementById('badgeWestern').innerText = `${state.westernSun.name.split(' ')[0]} ${state.westernSun.symbol}`;
+
+            // Render SVG Kundalis (Lagna D1 and Navamsha D9)
+            renderNorthIndianChart('lagnaChartSvg', state.lagnaRashiIndex, state.planets, false);
+            renderNorthIndianChart('navamshaChartSvg', state.navamshaLagnaIndex, state.planets, true);
+
+            // Populate Ephemeris Table
+            const tbody = document.getElementById('grahaTableBody');
+            tbody.innerHTML = '';
+            state.planets.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-amber-900/10 transition";
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 font-semibold text-amber-200">${p.symbol} ${p.name}</td>
+                    <td class="py-2.5 px-3">${p.sign.name}</td>
+                    <td class="py-2.5 px-3 font-mono">${p.signDeg}°</td>
+                    <td class="py-2.5 px-3">${p.nakshatra} <span class="text-amber-400">P${p.pada}</span></td>
+                    <td class="py-2.5 px-3 font-bold text-sky-400">H${p.houseD1}</td>
+                    <td class="py-2.5 px-3 font-bold text-purple-400">${p.d9Sign.name.split(' ')[0]} (H${p.houseD9})</td>
+                    <td class="py-2.5 px-3 text-[11px] text-emerald-400">${p.houseD1 === 1 || p.houseD1 === 5 || p.houseD1 === 9 ? 'Kona Benefic' : p.houseD1 === 6 || p.houseD1 === 8 || p.houseD1 === 12 ? 'Trika Challenge' : 'Kendra Strong'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Lal Kitab Section
+            const lkData = generateLalKitabAnalysis(state);
+            const debtsList = document.getElementById('lkDebtsList');
+            debtsList.innerHTML = lkData.debts.map(d => `
+                <div class="p-2.5 bg-rose-950/30 rounded-lg border border-rose-500/20">
+                    <p class="font-bold text-rose-300 font-cinzel">${d.title}</p>
+                    <p class="text-slate-300 mt-1">${d.cause}</p>
+                    <p class="text-amber-300 mt-1 text-[11px]"><strong>Lal Kitab Totka:</strong> ${d.totka}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('lkBlindHouses').innerHTML = `
+                <p>In your chart, House 6 & House 10 have planetary blind interlocks. Keep professional transactions transparent and avoid keeping non-functional watches at home.</p>
+                <div class="p-2.5 bg-amber-950/30 rounded-lg border border-amber-500/20 mt-2">
+                    <span class="text-amber-300 font-bold">Karmic Remedy:</span> Donate whole almonds with skin to a temple and keep half back wrapped in yellow cloth.
+                </div>
+            `;
+
+            document.getElementById('lkGeneralPrecautions').innerHTML = lkData.precautions.map(p => `
+                <div class="flex items-start gap-2">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                    <span>${p}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('lkRemediesGrid').innerHTML = lkData.remedies.map(r => `
+                <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <span class="text-amber-400 font-semibold font-cinzel">${r.graha} in House ${r.house}</span>
+                        <p class="text-slate-300 mt-1.5">${r.text}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Ravana Samhita Section
+            const ravanaData = generateRavanaSamhitaInsights(state);
+            document.getElementById('ravanaYogas').innerHTML = ravanaData.yogas.map(y => `
+                <div class="p-4 bg-amber-950/20 rounded-xl border border-amber-500/20 space-y-2">
+                    <h4 class="font-cinzel font-bold text-amber-300 text-sm">${y.title}</h4>
+                    <p class="italic text-amber-200/80 font-cinzel text-[11px]">${y.sloka}</p>
+                    <p class="text-slate-300">${y.meaning}</p>
+                    <p class="text-amber-400 text-[11px]"><strong>Tantrik Activation:</strong> ${y.activation}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('ravanaMantras').innerHTML = ravanaData.mantras.map(m => `
+                <div class="p-3.5 bg-slate-900/70 rounded-xl border border-amber-500/20">
+                    <p class="text-amber-400 font-bold font-cinzel mb-1">${m.deity}</p>
+                    <p class="font-mono text-slate-200 text-xs my-1 bg-black/40 p-2 rounded">${m.mantra}</p>
+                    <p class="text-[10px] text-slate-400 font-cinzel">Prescribed Recitation: ${m.count}</p>
+                </div>
+            `).join('');
+
+            // Global & Western/Chinese
+            const globalData = generateGlobalSynthesis(state);
+            document.getElementById('westernSynthesis').innerHTML = globalData.westernDesc;
+            document.getElementById('chineseSynthesis').innerHTML = globalData.chineseDesc;
+            document.getElementById('grandSynthesisText').innerHTML = globalData.grandSynthesis;
+
+            // Show results & scroll
+            const container = document.getElementById('resultsContainer');
+            container.classList.remove('hidden');
+            container.scrollIntoView({ behavior: 'smooth' });
+
+            lucide.createIcons();
+        });
+
+        // ---------------- AI ASTROLOGER CHAT ENGINE ----------------
+        let userApiKey = localStorage.getItem('cosmo_api_key') || '';
+        let llmProvider = localStorage.getItem('cosmo_provider') || 'gemini';
+
+        function toggleApiKeyModal() {
+            const modal = document.getElementById('apiKeyModal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                document.getElementById('userApiKey').value = userApiKey;
+                document.getElementById('llmProvider').value = llmProvider;
+            }
+        }
+
+        function saveApiKey() {
+            userApiKey = document.getElementById('userApiKey').value.trim();
+            llmProvider = document.getElementById('llmProvider').value;
+            localStorage.setItem('cosmo_api_key', userApiKey);
+            localStorage.setItem('cosmo_provider', llmProvider);
+            toggleApiKeyModal();
+            alert("API Configuration Saved Successfully!");
+        }
+
+        function askQuickPrompt(question) {
+            document.getElementById('aiInput').value = question;
+            handleAiSend();
+        }
+
+        async function handleAiSend() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            if (!currentChartState) {
+                alert("Please generate your astrological synthesis first using the form!");
+                return;
+            }
+
+            input.value = '';
+            appendChatMessage("user", message);
+
+            // Show typing indicator
+            const typingId = appendChatMessage("bot", "Consulting the Parashara Hora, Ravana Samhita & Akashic records...");
+
+            try {
+                let botReply = "";
+                if (userApiKey) {
+                    botReply = await callExternalLLM(message, currentChartState);
+                } else {
+                    botReply = generateBuiltInJyotishResponse(message, currentChartState);
+                }
+                updateChatMessage(typingId, botReply);
+            } catch (err) {
+                console.error(err);
+                const fallbackReply = generateBuiltInJyotishResponse(message, currentChartState);
+                updateChatMessage(typingId, fallbackReply);
+            }
+        }
+
+        function appendChatMessage(sender, text) {
+            const chatLog = document.getElementById('chatLog');
+            const msgId = 'msg-' + Date.now();
+            const div = document.createElement('div');
+            div.id = msgId;
+            div.className = `flex gap-3 items-start ${sender === 'user' ? 'justify-end' : ''}`;
+
+            if (sender === 'bot') {
+                div.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-purple-900/60 border border-purple-400/40 flex-shrink-0 flex items-center justify-center text-purple-300 font-cinzel text-xs">ॐ</div>
+                    <div class="chat-text bg-slate-900/90 border border-purple-500/20 rounded-2xl rounded-tl-none p-3.5 max-w-[85%] text-slate-200 leading-relaxed shadow-sm">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="chat-text bg-gradient-to-r from-amber-600 to-amber-700 text-slate-950 font-medium rounded-2xl rounded-tr-none p-3.5 max-w-[85%] leading-relaxed shadow-sm">
+                        ${text}
+                    </div>
+                    <div class="w-7 h-7 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center text-black font-bold text-xs"><i data-lucide="user" class="w-4 h-4"></i></div>
+                `;
+            }
+            chatLog.appendChild(div);
+            chatLog.scrollTop = chatLog.scrollHeight;
+            lucide.createIcons();
+            return msgId;
+        }
+
+        function updateChatMessage(msgId, newText) {
+            const el = document.getElementById(msgId);
+            if (el) {
+                const textContainer = el.querySelector('.chat-text');
+                if (textContainer) {
+                    textContainer.innerHTML = newText;
+                }
+            }
+            const chatLog = document.getElementById('chatLog');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        // ---------------- BUILT-IN JYOTISH INTELLIGENCE ----------------
+        function generateBuiltInJyotishResponse(query, s) {
+            const q = query.toLowerCase();
+            const lagnaName = s.lagna.name;
+            const moon = s.planets.find(p => p.name.includes("Moon"));
+            const sun = s.planets.find(p => p.name.includes("Sun"));
+            const jupiter = s.planets.find(p => p.name.includes("Jupiter"));
+            const saturn = s.planets.find(p => p.name.includes("Saturn"));
+            const venus = s.planets.find(p => p.name.includes("Venus"));
+
+            if (q.includes("career") || q.includes("job") || q.includes("business") || q.includes("profession") || q.includes("money") || q.includes("wealth")) {
+                return `
+                    <p class="font-bold text-amber-300 font-cinzel mb-1">Career & Dhana Analysis (Parashara + Lal Kitab + BaZi):</p>
+                    <p class="mb-2">Your Lagna is <strong>${lagnaName}</strong>, with 10th House lord dynamics connected to <strong>${saturn.name} (H${saturn.houseD1})</strong> and <strong>${sun.name}</strong>. In Navamsha (D9), your soul career orientation reflects leadership and analytical strategy.</p>
+                    <p class="mb-2"><strong>Favorable Fields:</strong> Technology architecture, advisory/consulting, management, strategic commerce, or high-skill creative fields.</p>
+                    <p class="text-amber-400 text-xs"><strong>Remedy for Fast Growth:</strong> Water a Peepal tree without touching it on Saturdays and apply saffron tilak before major professional negotiations.</p>
+                `;
+            }
+
+            if (q.includes("marry") || q.includes("marriage") || q.includes("spouse") || q.includes("love") || q.includes("relationship") || q.includes("wife") || q.includes("husband")) {
+                const d9LagnaRashi = RASHIS[s.navamshaLagnaIndex].name;
+                return `
+                    <p class="font-bold text-purple-300 font-cinzel mb-1">Marriage & Navamsha (D9) Synthesis:</p>
+                    <p class="mb-2">Your 7th House in the D1 Lagna chart is ruled by <strong>${RASHIS[(s.lagnaRashiIndex + 6) % 12].name}</strong>, while your Navamsha Lagna sits in <strong>${d9LagnaRashi}</strong>. Venus is placed in House ${venus.houseD1}.</p>
+                    <p class="mb-2"><strong>Spouse Profile:</strong> Deeply devoted, intellectually grounded, having an appreciation for culture and refined aesthetics. Marriage serves as a strong stabilizer for your post-30 wealth.</p>
+                    <p class="text-purple-400 text-xs"><strong>Ravana Samhita Harmonizer:</strong> Offer white flowers at a Shiva-Parvati shrine on Shukla Paksha Mondays to purify relationship karma.</p>
+                `;
+            }
+
+            if (q.includes("remedy") || q.includes("totka") || q.includes("upay") || q.includes("bad luck") || q.includes("dosha")) {
+                return `
+                    <p class="font-bold text-emerald-300 font-cinzel mb-1">Top Classical Vedic & Lal Kitab Prescriptions:</p>
+                    <ul class="list-disc pl-4 space-y-1.5 text-xs text-slate-200">
+                        <li><strong>Lal Kitab Core:</strong> Keep a solid square piece of pure silver in your pocket or wallet. Avoid non-vegetarian food on Tuesdays and Saturdays.</li>
+                        <li><strong>Ravana Samhita:</strong> Recite the <em>Shiva Panchakshari Mantra</em> (ॐ नमः शिवाय) 108 times at dawn.</li>
+                        <li><strong>BaZi Balance:</strong> Incorporate Earth and Metal tones (amber, gold, white) in your workspace to harmonize your Wu Xing element.</li>
+                    </ul>
+                `;
+            }
+
+            // General Comprehensive Reply
+            return `
+                <p class="font-bold text-amber-300 font-cinzel mb-1">Oracle Reading for ${s.name}:</p>
+                <p class="mb-2">Your astral blueprint represents a union between <strong>${lagnaName}</strong> (Ascendant) and <strong>${moon.nakshatra} Nakshatra</strong> (Chandra Lagna). Your Chinese pillar is the <strong>${s.chineseStemElement} ${s.chineseAnimal.name}</strong>.</p>
+                <p class="mb-2">The planetary matrix suggests strong inner endurance. While Sade Sati or Rahu transits may periodically test patience, your 9th/10th house alignments protect you from long-term setbacks. Focus on spiritual grounding and structured routines.</p>
+                <p class="text-amber-400 text-xs">You can ask specific questions like: <em>"When will I get a promotion?"</em>, <em>"Explain my D9 Navamsha spouse traits"</em>, or <em>"What is my Lal Kitab ancestral debt?"</em></p>
+            `;
+        }
+
+        // Optional Live LLM Call if API Key provided
+        async function callExternalLLM(prompt, s) {
+            const systemContext = `
+                You are CosmoVedika's master Jyotish Rishi with deep command over:
+                1. Brihad Parashara Hora Shastra (Lagna: ${s.lagna.name}, Moon: ${s.planets.find(p=>p.name.includes("Moon")).nakshatra})
+                2. Navamsha D9 Chart
+                3. Lal Kitab Farman & Totkas
+                4. Ravana Samhita Tantrik Mantras
+                5. Western Astrology (Sun: ${s.westernSun.name}) & Chinese BaZi (${s.chineseStemElement} ${s.chineseAnimal.name}).
+                
+                Provide an inspiring, deeply detailed, aesthetic and astrologically accurate response to the user's question.
+            `;
+
+            if (llmProvider === 'gemini') {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userApiKey}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: `${systemContext}\n\nUser Question: ${prompt}` }]
+                        }]
+                    })
+                });
+                const data = await res.json();
+                return data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+            } else {
+                // OpenAI standard endpoint
+                const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userApiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            { role: 'system', content: systemContext },
+                            { role: 'user', content: prompt }
+                        ]
+                    })
+                });
+                const data = await res.json();
+                return data.choices[0].message.content.replace(/\n/g, '<br>');
+            }
+        }
+    </script>
+</body>
+</html>
