@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CosmoVedika | Advanced Vedic & Multi-Tradition Astrological Intelligence</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Mystical Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cosmic-bg: #05050f;
+        }
+
+        body {
+            background-color: var(--cosmic-bg);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #E2E8F0;
+            overflow-x: hidden;
+        }
+
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-cinzel-dec { font-family: 'Cinzel Decorative', cursive; }
+
+        .gold-text {
+            background: linear-gradient(135deg, #fff2a3 0%, #e5a93c 50%, #ad7616 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(13, 15, 36, 0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #070714; }
+        ::-webkit-scrollbar-thumb { background: #584318; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c59b27; }
+
+        /* Kundali SVG Styling */
+        .chart-line { stroke: #d4af37; stroke-width: 1.6; }
+        .chart-sign-no { fill: #facc15; font-size: 11.5px; font-weight: bold; font-family: 'Cinzel', serif; }
+        .chart-planet { fill: #38bdf8; font-size: 10.5px; font-weight: 700; }
+        .chart-house-tag { fill: rgba(255, 255, 255, 0.25); font-size: 8.5px; font-family: sans-serif; }
+
+        /* Stars Canvas */
+        #stars-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating Cloud Animation */
+        @keyframes floatCloud {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-7px); }
+        }
+        .animate-cloud-float {
+            animation: floatCloud 3.5s ease-in-out infinite;
+        }
+
+        .cloud-bubble {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 10px 25px -3px rgba(255, 255, 255, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .cloud-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 28px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #ffffff;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative selection:bg-amber-500 selection:text-black">
+    <canvas id="stars-canvas"></canvas>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+        <!-- HEADER -->
+        <header class="border-b border-amber-900/40 bg-black/50 backdrop-blur-md sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full border border-amber-500/50 flex items-center justify-center bg-amber-950/30 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                        <i data-lucide="sun" class="w-6 h-6 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-cinzel text-xl sm:text-2
